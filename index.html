@@ -1,0 +1,2467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Chen · Squash Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wall:#F4F1E8;
+    --wall-2:#FBFAF5;
+    --ink:#15181B;
+    --muted:#6A6F75;
+    --line:#CE1126;
+    --line-soft:#E8B4BC;
+    --ball:#F4C20D;
+    --slate:#37485A;
+    --maple:#D9B382;
+    --hair:#E2DDD0;
+    --win-bg:#FBF6DE;
+    --loss-bg:#EEF1F4;
+    --bye-bg:#F6F4EE;
+    --bu11:#3A6B9F;
+    --bu13:#CE1126;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--wall);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+  .eyebrow{font-family:'Saira Condensed',sans-serif;font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:.78rem;color:var(--line);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .eyebrow::after{content:"";flex:1;height:2px;background:var(--line);opacity:.25}
+
+  header{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--wall-2),var(--wall));border-bottom:2px solid var(--line);}
+  .court-lines{position:absolute;inset:0;pointer-events:none;opacity:.5;}
+  .court-lines span{position:absolute;background:var(--line-soft)}
+  .cl-v{width:2px;top:0;bottom:0} .cl-h{height:2px;left:0;right:0}
+  .l1{left:50%} .l2{top:38%} .l3{left:24%;top:38%;bottom:0;width:2px} .l4{right:24%;top:38%;bottom:0;width:2px}
+  header .wrap{position:relative;padding:54px 20px 40px}
+  .kicker{font-family:'Saira Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;color:var(--muted);font-weight:600;}
+  h1{font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:clamp(2.8rem,9vw,5rem);line-height:.92;letter-spacing:.005em;margin:6px 0 4px;}
+  h1 .cn{color:var(--line)}
+  .sub{color:var(--muted);font-size:1.02rem;max-width:46ch}
+  .id-chip{display:inline-block;margin-top:14px;font-family:'Saira Condensed',sans-serif;font-weight:600;letter-spacing:.08em;font-size:.85rem;background:var(--ink);color:var(--wall);padding:4px 12px;border-radius:2px;}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:6px;overflow:hidden;margin-top:30px;}
+  .stat{background:var(--wall-2);padding:18px 16px}
+  .stat .n{font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:2.2rem;line-height:1;}
+  .stat .n.red{color:var(--line)}
+  .stat .l{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+  @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+  section{padding:46px 0}
+  .section-head h2{font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:1.9rem;letter-spacing:.01em;}
+  .section-head p{color:var(--muted);margin-top:4px;max-width:60ch}
+
+  /* age category badge */
+  .cat-bu11{background:#E8F0F8;color:var(--bu11);border:1px solid #B8CDE0;font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:3px;}
+  .cat-bc{background:#EDE8F8;color:#63439A;border:1px solid #CEBFE6;font-weight:700;font-size:.72rem;padding:3px 9px;border-radius:3px;}
+  .cat-bu13{background:#FCE8EA;color:var(--bu13);border:1px solid #F0B8BD;font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:3px;}
+
+  .ball-dot{display:inline-block;width:13px;height:13px;border-radius:50%;background:var(--ball);border:1.5px solid #C99A06;position:relative;vertical-align:middle;}
+  .ball-dot::before,.ball-dot::after{content:"";position:absolute;width:2.5px;height:2.5px;border-radius:50%;background:#7A5E00;top:3.5px;}
+  .ball-dot::before{left:3.5px}.ball-dot::after{right:3.5px}
+
+  .tourney{background:var(--wall-2);border:1px solid var(--hair);border-radius:8px;overflow:hidden;margin-top:22px;}
+  .tourney-top{padding:18px 20px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;justify-content:space-between;}
+  .tourney-top h3{font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:1.4rem;}
+  .tourney-top .when{color:var(--muted);font-size:.9rem}
+  .badge{font-family:'Saira Condensed',sans-serif;font-weight:600;letter-spacing:.06em;font-size:.72rem;text-transform:uppercase;padding:3px 9px;border-radius:3px;}
+  .badge.verified{background:var(--win-bg);color:#8A6D00;border:1px solid var(--ball)}
+  .badge.pending-b{background:var(--loss-bg);color:var(--slate);border:1px solid #C7D0D8}
+  .badge.intl{background:#EAF1F8;color:#2C5379;border:1px solid #3A6B9F}
+
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;padding:14px 20px 4px;}
+  .pill{font-size:.78rem;color:var(--ink);background:var(--wall);border:1px solid var(--hair);padding:4px 10px;border-radius:20px;}
+  .pill b{font-family:'Saira Condensed',sans-serif;font-weight:700}
+  a.pill.src{text-decoration:none;color:var(--line);border-color:var(--line);cursor:pointer;transition:background .15s}
+  a.pill.src:hover{background:var(--line);color:#fff}
+  a.pill.src b{color:inherit}
+  .filter-bar{display:flex;align-items:center;gap:12px 16px;margin:18px 0 6px;flex-wrap:wrap}
+  .filter-group{display:flex;align-items:center;gap:8px}
+  .filter-bar label{font-size:.82rem;color:var(--muted);font-weight:600}
+  .filter-bar select{font-family:'Saira Condensed',sans-serif;font-weight:600;font-size:1rem;color:var(--ink);background:var(--wall);border:1.5px solid var(--line);border-radius:8px;padding:7px 36px 7px 13px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23CE1126' stroke-width='1.7' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;max-width:260px}
+  .filter-bar select:focus{outline:2px solid var(--ball);outline-offset:1px}
+  .filter-reset{font-family:'Saira Condensed',sans-serif;font-weight:600;font-size:.9rem;color:var(--muted);background:none;border:1px solid var(--hair);border-radius:8px;padding:7px 12px;cursor:pointer}
+  .filter-reset:hover{color:var(--ink);border-color:var(--line)}
+  .filter-bar .count{font-size:.8rem;color:var(--muted)}
+
+  .match{padding:16px 20px;border-top:1px solid var(--hair);display:grid;grid-template-columns:62px 1fr auto;gap:14px;align-items:center;}
+  .rnd{font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.04em;color:var(--slate);}
+  .rnd small{display:block;font-family:'Inter';font-weight:400;font-size:.68rem;color:var(--muted);letter-spacing:0}
+  .opp .name{font-weight:600}
+  .opp .name .seed{color:var(--line);font-weight:600;font-size:.82rem;margin-left:6px}
+  .opp .cn{color:var(--muted);font-size:.85rem}
+  .result{text-align:right;min-width:130px}
+  .result .tag{font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase;}
+  .result.win .tag{color:#8A6D00}
+  .result.loss .tag{color:var(--slate)}
+  .result.bye .tag{color:var(--muted)}
+  .result.tbd .tag{color:var(--muted)}
+  .scores{margin-top:5px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+  .game{font-family:'Saira Condensed',sans-serif;font-weight:600;font-size:.85rem;padding:2px 7px;border-radius:3px;background:var(--loss-bg);color:var(--slate);white-space:nowrap;}
+  .game.w{background:var(--win-bg);color:#8A6D00}
+  .game.bye{background:var(--bye-bg);color:var(--muted)}
+  .video-links{margin-top:6px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+  .video-links a{font-family:'Inter';font-size:.72rem;font-weight:600;color:var(--line);text-decoration:none;border:1px solid var(--hair);padding:2px 8px;border-radius:10px;transition:background .15s,color .15s;white-space:nowrap}
+  .video-links a:hover{background:var(--line);color:#fff}
+  @media(max-width:560px){
+    .match{grid-template-columns:50px 1fr;row-gap:10px}
+    .result{grid-column:2/3;text-align:left}
+    .scores{justify-content:flex-start}
+    .video-links{justify-content:flex-start}
+  }
+
+  .takeaway{background:var(--wall);border-left:3px solid var(--ball);padding:12px 16px;margin:16px 20px 20px;border-radius:0 6px 6px 0;font-size:.92rem;}
+  .takeaway b{color:var(--ink)}
+
+  /* age rule callout */
+  .age-rule{background:var(--wall-2);border:1px solid var(--hair);border-left:3px solid var(--slate);border-radius:0 6px 6px 0;padding:14px 18px;margin-top:24px;font-size:.88rem;}
+  .age-rule table{border-collapse:collapse;margin-top:10px;width:100%}
+  .age-rule td,.age-rule th{padding:4px 10px;text-align:left;font-size:.82rem;border-bottom:1px solid var(--hair)}
+  .age-rule th{font-weight:600;font-family:'Saira Condensed',sans-serif;letter-spacing:.05em;font-size:.75rem;text-transform:uppercase;color:var(--muted)}
+  .age-rule td:first-child{font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:.95rem}
+  .excl{color:var(--muted);font-style:italic}
+
+  .bars{display:grid;gap:16px;margin-top:24px}
+  .bar-row .bl{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px}
+  .bl .v{font-family:'Saira Condensed',sans-serif;font-weight:700}
+  .track{height:12px;background:var(--loss-bg);border-radius:6px;overflow:hidden;display:flex}
+  .track .fill{height:100%}
+  .fill.won{background:var(--ball)}
+  .fill.lost{background:var(--slate);opacity:.35}
+
+  .pending-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:20px}
+  @media(max-width:640px){.pending-grid{grid-template-columns:1fr}}
+  .pend{background:var(--wall-2);border:1px dashed #CBC4B2;border-radius:7px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .pend .t{font-weight:600;font-size:.92rem}
+  .pend .y{font-family:'Saira Condensed',sans-serif;font-weight:700;color:var(--muted);font-size:1rem}
+  .pend .cat{font-family:'Saira Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:3px;white-space:nowrap}
+  .pend .cat.u11{background:#E8F0F8;color:var(--bu11);border:1px solid #B8CDE0}
+  .pend .cat.u13{background:#FCE8EA;color:var(--bu13);border:1px solid #F0B8BD}
+
+  .note{background:var(--wall-2);border:1px solid var(--hair);border-radius:8px;padding:18px 20px;margin-top:24px;font-size:.86rem;color:var(--muted);}
+  .note b{color:var(--ink)}
+  .note a{color:var(--line)}
+  footer{padding:30px 0 50px;color:var(--muted);font-size:.78rem;text-align:center}
+
+  @media(prefers-reduced-motion:no-preference){
+    .reveal{opacity:0;transform:translateY(14px);animation:rise .65s ease forwards}
+    @keyframes rise{to{opacity:1;transform:none}}
+    .tourney:nth-child(2){animation-delay:.07s}
+    .tourney:nth-child(3){animation-delay:.14s}
+  }
+  :focus-visible{outline:3px solid var(--line);outline-offset:2px}
+
+  /* progress timeline dot */
+  .tl{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);margin-bottom:4px}
+  .tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .tl-dot.bu11{background:var(--bu11)}
+  .tl-dot.bu13{background:var(--bu13)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="court-lines" aria-hidden="true">
+    <span class="cl-v l1"></span><span class="cl-h l2"></span>
+    <span class="l3"></span><span class="l4"></span>
+  </div>
+  <div class="wrap">
+    <div class="kicker">Squash Progress · HKS Junior Record</div>
+    <h1>Alex Chen<br><span class="cn">陳科霖</span></h1>
+    <p class="sub">A running record of Alex's junior match results — built from official Hong Kong Squash draw sheets to track his growth match by match.</p>
+    <div class="id-chip">HKS #34224 · i-Mask Advance SC · Born 19 Jul 2014</div>
+
+    <div class="stats">
+      <div class="stat"><div class="n red">#28</div><div class="l">BU13 rank · Jun 2026</div></div>
+      <div class="stat"><div class="n">68.2</div><div class="l">Avg ranking points · Jun 2026</div></div>
+      <div class="stat"><div class="n">Gold</div><div class="l">Award scheme 金章</div></div>
+      <div class="stat"><div class="n">BU11→13</div><div class="l">Category arc</div></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- AGE CATEGORY RULE -->
+  <section style="padding-bottom:0">
+    <div class="age-rule">
+      <b>Age category rule (HK Squash):</b> "Under 11" means age 10 or younger; once a player turns 11 they move up to "Under 13." Alex was born <b>19 Jul 2014</b>, so he turned 11 on 19 Jul 2025 and moved from BU11 to BU13 from the following ranking period (Aug 2025).
+      <table>
+        <tr><th>Period</th><th>Age</th><th>Category</th><th>Status</th></tr>
+        <tr><td>2022–23</td><td>8–9</td><td><span class="excl">BU9</span></td><td class="excl">excluded from dashboard</td></tr>
+        <tr><td>2024 – Jul 2025</td><td>10</td><td><span class="cat-bu11">BU11</span></td><td>Ranking Tournament Apr 2025 confirmed ✓</td></tr>
+        <tr><td>Aug 2025 onward</td><td>11–12</td><td><span class="cat-bu13">BU13</span></td><td>Junior Cup Jun 2026 confirmed ✓</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- RANKING TREND -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">Official HKS junior ranking</div>
+      <h2>Ranking trend</h2>
+      <p>Alex's position in the official Hong Kong Squash bi-monthly Junior Ranking (Boys), from Feb 2024 to Jun 2026. Lower is better, so the line rising means he's climbing. Blue points are BU11; red points are BU13 after he moved up in Aug 2025. (HK Squash didn't publish a separate April 2024 edition — the April Ranking Tournament results are reflected in the June 2024 figure.)</p>
+    </div>
+
+    <div style="background:var(--wall-2);border:1px solid var(--hair);border-radius:8px;padding:18px 16px 8px;margin-top:22px">
+      <svg viewBox="0 0 720 360" width="100%" role="img" aria-label="Line chart of Alex's junior ranking from February 2024 to June 2026. In BU11 he went 54, 41, 46, 39, 41; after moving up to BU13 in Aug 2025 he went 47, 41, 31, 29, 28.">
+        <!-- gridlines + y labels (rank inverted: 1 top, 60 bottom) -->
+        <g font-family="Inter, sans-serif" font-size="12" fill="#6A6F75">
+          <line x1="70" y1="40"  x2="680" y2="40"  stroke="#E2DDD0"/>
+          <text x="60" y="44" text-anchor="end">1</text>
+          <line x1="70" y1="79.7" x2="680" y2="79.7" stroke="#E2DDD0"/>
+          <text x="60" y="83.7" text-anchor="end">10</text>
+          <line x1="70" y1="123.7" x2="680" y2="123.7" stroke="#E2DDD0"/>
+          <text x="60" y="127.7" text-anchor="end">20</text>
+          <line x1="70" y1="167.8" x2="680" y2="167.8" stroke="#E2DDD0"/>
+          <text x="60" y="171.8" text-anchor="end">30</text>
+          <line x1="70" y1="211.9" x2="680" y2="211.9" stroke="#E2DDD0"/>
+          <text x="60" y="215.9" text-anchor="end">40</text>
+          <line x1="70" y1="255.9" x2="680" y2="255.9" stroke="#E2DDD0"/>
+          <text x="60" y="259.9" text-anchor="end">50</text>
+          <line x1="70" y1="300" x2="680" y2="300" stroke="#E2DDD0"/>
+          <text x="60" y="304" text-anchor="end">60</text>
+          <text x="24" y="170" text-anchor="middle" transform="rotate(-90 24 170)" fill="#37485A" font-weight="600">Ranking position</text>
+        </g>
+        <!-- category change marker between Apr'25 and Aug'25 -->
+        <line x1="375" y1="40" x2="375" y2="300" stroke="#C7D0D8" stroke-dasharray="3 4"/>
+        <text x="379" y="54" font-family="Inter, sans-serif" font-size="11" fill="#6A6F75">moved up to BU13</text>
+        <!-- BU11 solid line (Feb'24 -> Apr'25) -->
+        <polyline points="70,273.56 137.78,216.27 205.56,238.31 273.33,207.46 341.11,216.27" fill="none" stroke="#3A6B9F" stroke-width="3"/>
+        <!-- transition segment (BU11 -> BU13) dashed -->
+        <polyline points="341.11,216.27 408.89,242.71" fill="none" stroke="#9AA3AB" stroke-width="2" stroke-dasharray="4 4"/>
+        <!-- BU13 solid line -->
+        <polyline points="408.89,242.71 476.67,216.27 544.44,172.2 612.22,163.39 680,158.98" fill="none" stroke="#CE1126" stroke-width="3"/>
+        <!-- points -->
+        <g font-family="'Saira Condensed', sans-serif" font-weight="700" font-size="15">
+          <!-- Feb'24 BU11 -->
+          <circle cx="70" cy="273.56" r="6" fill="#3A6B9F"/>
+          <text x="70" y="293.6" text-anchor="middle" fill="#3A6B9F">54</text>
+          <!-- Jun'24 BU11 -->
+          <circle cx="137.78" cy="216.27" r="6" fill="#3A6B9F"/>
+          <text x="137.78" y="204" text-anchor="middle" fill="#3A6B9F">41</text>
+          <!-- Aug'24 BU11 -->
+          <circle cx="205.56" cy="238.31" r="6" fill="#3A6B9F"/>
+          <text x="205.56" y="258" text-anchor="middle" fill="#3A6B9F">46</text>
+          <!-- Dec'24 BU11 -->
+          <circle cx="273.33" cy="207.46" r="6" fill="#3A6B9F"/>
+          <text x="273.33" y="195" text-anchor="middle" fill="#3A6B9F">39</text>
+          <!-- Apr'25 BU11 -->
+          <circle cx="341.11" cy="216.27" r="6" fill="#3A6B9F"/>
+          <text x="341.11" y="236" text-anchor="middle" fill="#3A6B9F">41</text>
+          <!-- Aug'25 BU13 -->
+          <circle cx="408.89" cy="242.71" r="6" fill="#CE1126"/>
+          <text x="408.89" y="262" text-anchor="middle" fill="#CE1126">47</text>
+          <!-- Dec'25 BU13 -->
+          <circle cx="476.67" cy="216.27" r="6" fill="#CE1126"/>
+          <text x="476.67" y="204" text-anchor="middle" fill="#CE1126">41</text>
+          <!-- Feb'26 BU13 -->
+          <circle cx="544.44" cy="172.2" r="6" fill="#CE1126"/>
+          <text x="544.44" y="160" text-anchor="middle" fill="#CE1126">31</text>
+          <!-- Apr'26 BU13 -->
+          <circle cx="612.22" cy="163.39" r="6" fill="#CE1126"/>
+          <text x="612.22" y="151" text-anchor="middle" fill="#CE1126">29</text>
+          <!-- Jun'26 BU13 latest -->
+          <circle cx="680" cy="158.98" r="7" fill="#F4C20D" stroke="#C99A06" stroke-width="1.5"/>
+          <text x="680" y="147" text-anchor="middle" fill="#8A6D00">28</text>
+        </g>
+        <!-- x labels -->
+        <g font-family="Inter, sans-serif" font-size="11" fill="#6A6F75" text-anchor="middle">
+          <text x="70" y="324">Feb 24</text>
+          <text x="137.78" y="324">Jun 24</text>
+          <text x="205.56" y="324">Aug 24</text>
+          <text x="273.33" y="324">Dec 24</text>
+          <text x="341.11" y="324">Apr 25</text>
+          <text x="408.89" y="324">Aug 25</text>
+          <text x="476.67" y="324">Dec 25</text>
+          <text x="544.44" y="324">Feb 26</text>
+          <text x="612.22" y="324">Apr 26</text>
+          <text x="680" y="324">Jun 26</text>
+        </g>
+      </svg>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;padding:4px 10px 8px;font-size:.8rem;color:var(--muted)">
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--bu11);vertical-align:middle"></span> BU11</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--line);vertical-align:middle"></span> BU13</span>
+        <span><span class="ball-dot" style="transform:scale(.85)"></span> Latest</span>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:.86rem">
+        <tr style="text-align:left;color:var(--muted);font-family:'Saira Condensed',sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:.75rem">
+          <th style="padding:6px 10px;border-bottom:1px solid var(--hair)">Edition</th>
+          <th style="padding:6px 10px;border-bottom:1px solid var(--hair)">Category</th>
+          <th style="padding:6px 10px;border-bottom:1px solid var(--hair)">Rank</th>
+          <th style="padding:6px 10px;border-bottom:1px solid var(--hair)">Avg points</th>
+        </tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Feb 2024</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu11">BU11</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">54</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">27.60</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Jun 2024</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu11">BU11</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">41</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">39.60</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Aug 2024</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu11">BU11</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">46</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">36.00</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Dec 2024</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu11">BU11</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">39</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">52.00</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Apr 2025</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu11">BU11</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">41</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">52.00</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Aug 2025</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu13">BU13 ↑</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">47</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">31.80</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Dec 2025</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu13">BU13</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">41</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">47.40</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Feb 2026</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu13">BU13</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">31</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">56.20</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">Apr 2026</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)"><span class="cat-bu13">BU13</span></td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">29</td><td style="padding:6px 10px;border-bottom:1px solid var(--hair)">56.20</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:600">Jun 2026</td><td style="padding:6px 10px"><span class="cat-bu13">BU13</span></td><td style="padding:6px 10px;font-weight:700">28</td><td style="padding:6px 10px;font-weight:600">68.20</td></tr>
+      </table>
+    </div>
+
+    <div class="takeaway" style="margin:18px 0 0">
+      <b>Coach's note:</b> Two phases worth pointing out to Alex. In <b>BU11</b> his very first ranking was #54 (Feb 2024); by that June he'd jumped to #41 on the back of the April Ranking Tournament, and across the year he settled into the high-30s to low-40s as his results matured. Then he aged up to <b>BU13</b> in Aug 2025 — landing at #47 against older boys, exactly as you'd expect — and has since gone 47 → 41 → 31 → 29 → <b>28</b>, five straight improvements. Each time he's changed level he's dipped briefly and then climbed. That's the pattern of a player who adapts and keeps pushing.
+    </div>
+
+    <div class="note" style="margin-top:16px">
+      <b>Source &amp; scope.</b> Ranking positions and average points are taken from the official bi-monthly Junior Ranking (Boys) at hksquash.org.hk; the Jun 2026 figures were supplied for this update. This chart now covers <b>Feb 2024 → Jun 2026</b>. Other editions, including Oct 2024 and his BU9 period (2022–early 2024), are outside the current chart.
+    </div>
+  </section>
+
+  <!-- MATCH LOG -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">Match log</div>
+      <h2>Verified results</h2>
+      <p>Every match below is pulled line-by-line from the official draw sheets with full set-by-set scores. <span class="ball-dot" aria-hidden="true"></span> = game won by Alex.</p>
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="yearSelect">Year</label>
+          <select id="yearSelect" aria-label="Filter tournaments by calendar year">
+            <option value="all">All years</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="oppSelect">Opponent</label>
+          <select id="oppSelect" aria-label="Filter matches by opponent">
+            <option value="all">All opponents</option>
+          </select>
+        </div>
+        <button type="button" id="filterReset" class="filter-reset">Reset</button>
+        <span class="count" id="filterCount"></span>
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 10: MILO ALL STAR MALAYSIA SQUASH JUNIOR OPEN 2026 (BU13, MALAYSIA — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>MILO All Star Malaysia Squash Junior Open 2026</h3>
+          <div class="when">13–18 Oct 2026 · Kuala Lumpur, Malaysia · Overseas</div>
+        </div>
+        <span class="badge intl">🇲🇾 Malaysia</span>
+      </div>
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>12 yrs</b></span>
+        <span class="pill">Draw position <b>[17/32]</b></span>
+        <span class="pill">Format <b>Main draw + placement brackets</b></span>
+        <span class="pill">Finished <b>31st–32nd</b></span>
+        <a class="pill src" href="https://www.squashhub.live/tournaments/milo-all-star-malaysia-squash-junior-open-2026/brackets?category=1ba233bc-92b8-47c4-83d4-7b776ba96e84" target="_blank" rel="noopener">Official draw <b>SquashHub ↗</b></a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R128<small>Main draw</small></div>
+        <div class="opp"><div class="name">Bye</div><div class="cn">Advanced to R64</div></div>
+        <div class="result bye"><div class="tag">Bye</div><div class="scores"><span class="game bye">no match played</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">R64<small>Main draw</small></div>
+        <div class="opp"><div class="name">Sean Yap <span class="cn">🇲🇾 SEL</span></div><div class="cn">13 Oct · Match 87</div></div>
+        <div class="result win"><div class="tag">Won 3–0</div><div class="scores"><span class="game w">12–10</span><span class="game w">11–1</span><span class="game w">11–1</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">R32<small>Main draw</small></div>
+        <div class="opp"><div class="name">Tianxiao Simon Mei <span class="cn">🇭🇰 HKG</span></div><div class="cn">14 Oct · Match 108</div></div>
+        <div class="result loss"><div class="tag">Lost 0–3</div><div class="scores"><span class="game">0–11</span><span class="game">1–11</span><span class="game">8–11</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">17–32 R16<small>Placement</small></div>
+        <div class="opp"><div class="name">Maaz Bin Fahad <span class="cn">🇶🇦 QAT</span></div><div class="cn">15 Oct · Match 245</div></div>
+        <div class="result loss"><div class="tag">Lost 1–2</div><div class="scores"><span class="game w">11–6</span><span class="game">9–11</span><span class="game">6–11</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">25–32 QF<small>Placement</small></div>
+        <div class="opp"><div class="name">Muhammad Rayyan Danish Mohd Rosli <span class="cn">🇲🇾 PJY</span></div><div class="cn">16 Oct · Match 262</div></div>
+        <div class="result loss"><div class="tag">Lost 0–2</div><div class="scores"><span class="game">6–11</span><span class="game">5–11</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">29–32 SF<small>Placement</small></div>
+        <div class="opp"><div class="name">Muyuan Zou <span class="cn">🇸🇬 SIN</span></div><div class="cn">17 Oct · Match 269</div></div>
+        <div class="result loss"><div class="tag">Lost 0–2</div><div class="scores"><span class="game">6–11</span><span class="game">10–12</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">31–32 F<small>Placement</small></div>
+        <div class="opp"><div class="name">Vareshvar Istritharan <span class="cn">🇲🇾 NSN</span></div><div class="cn">17 Oct · Match 271</div></div>
+        <div class="result win"><div class="tag">Won 2–1</div><div class="scores"><span class="game w">11–4</span><span class="game">9–11</span><span class="game w">11–7</span></div></div>
+      </div>
+      <div class="takeaway"><b>Coach's note:</b> Alex opened with a bye and a clean 3–0 win over Malaysia's Sean Yap, then lost to Hong Kong's Tianxiao Simon Mei in the Main draw. He played four more matches in the Places 17–32 bracket, finishing with a 2–1 win over Vareshvar Istritharan for 31st–32nd place. Malaysian state codes (SEL, PJY and NSN) identify Malaysian opponents. His counted record is <b>2W–4L</b>, 6–10 games and 127–140 points.</div>
+    </div>
+
+    <!-- HKSSF INTER-SCHOOL 2026-2027: BOYS C GRADE -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top"><div>
+        <h3>HKSSF Inter-school Individual Squash Competition 2026-2027</h3>
+        <div class="when">10–17 Oct 2026 · Cornwall St</div>
+      </div><span class="badge verified">Verified · official results</span></div>
+      <div class="meta-row">
+        <span class="cat-bc">Boys C Grade</span>
+        <span class="pill">Age at event <b>12 yrs</b></span>
+        <span class="pill">School <b>ISFA</b></span>
+        <span class="pill">Seeding <b>[9/16]</b></span>
+        <span class="pill">Run <b>R1 bye → R2 W/O → R3</b></span>
+        <a class="pill src" href="https://www.hksquash.org.hk/public/tournaments/draws/id/389/division_id/1661.html#drawsTab" target="_blank" rel="noopener">Official draw <b>id 389 ↗</b></a>
+      </div>
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp"><div class="name">Bye</div><div class="cn">Advanced to Round 2</div></div>
+        <div class="result bye"><div class="tag">Bye</div><div class="scores"><span class="game bye">no match played</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp"><div class="name">Han Jaden A</div><div class="cn">HKIS · 10 Oct, 15:30 · Crt 16 (CSPSC)</div></div>
+        <div class="result bye"><div class="tag">Won W/O</div><div class="scores"><span class="game bye">walkover — advanced, not counted</span></div></div>
+      </div>
+      <div class="match">
+        <div class="rnd">R3<small>Last 16</small></div>
+        <div class="opp"><div class="name">Szeto Jonas <span class="seed">[5/8 seed]</span></div><div class="cn">ISFA · 11 Oct, 11:30 · Crt 14 (CSPSC) · 18 min</div></div>
+        <div class="result loss"><div class="tag">Lost 0–3</div><div class="scores"><span class="game">5–11</span><span class="game">5–11</span><span class="game">7–11</span></div></div>
+      </div>
+      <div class="takeaway"><b>Tournament summary:</b> Alex represented ISFA in Boys C Grade as a [9/16] seed. A first-round bye and a walkover against Han Jaden A took him to Round 3, where he lost to [5/8] seed Szeto Jonas. Only the played match counts: 0W–1L, 0–3 games and 17–33 points. <a href="https://hksquash.org.hk/public/tournaments/schedule/id/389/player_id/34224.html" target="_blank" rel="noopener">Official player schedule ↗</a></div>
+    </div>
+
+    <!-- ── TOURNAMENT 9: MACAU JUNIOR SQUASH OPEN 2026 (BU13, Macau — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>2026 Macau Junior Squash Open</h3>
+          <div class="when">26–30 Aug 2026 · Macau, Macau China · Overseas</div>
+        </div>
+        <span class="badge intl">🇲🇴 Macau</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>12 yrs</b></span>
+        <span class="pill">Seeding <b>[9/16]</b></span>
+        <span class="pill">Run <b>Bye → R32 → W/O</b></span>
+        <span class="pill">Finished <b>25th–32nd bracket</b></span>
+        <span class="pill">🌏 Overseas event</span>
+        <a class="pill src" href="https://www.tournamentsoftware.com/tournament/4E9654AD-CE7E-4B21-A4CA-BD8DA91EC5E4/draw/8" target="_blank" rel="noopener">Official draw <b>TournamentSoftware ↗</b></a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R64<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Bye</div>
+          <div class="cn">Seeded directly to Round of 32</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Bye</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R32<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Seng Chi Zheng <span class="seed">[17/32]</span> <span class="cn">🇲🇴 MAC</span></div>
+          <div class="cn">鄭誠志 · 26 Aug, 20:00, N8 UM Sports Complex - 1</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 1–3</div>
+          <div class="scores"><span class="game">5–11</span><span class="game w">11–3</span><span class="game">8–11</span><span class="game">8–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">17–32<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Iat Cheng Chan <span class="seed">[17/32]</span> <span class="cn">🇲🇴 MAC</span></div>
+          <div class="cn">陳鎰正 · 27 Aug, 15:00, N8 UM Sports Complex - 4 · Alex withdrew — not counted</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Lost W/O</div>
+          <div class="scores"><span class="game bye">walkover — not counted</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">25–32<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Chun Yuen Aiden Lee <span class="seed">[17/32]</span> <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">李鎮源 · listed on player page as cancelled — not counted</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Cancelled</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A short Macau entry in a 64-player BU13 Monrad. Alex was listed as a [9/16] seed and received a Round of 64 bye, then lost a four-game Round of 32 match to local [17/32] seed Seng Chi Zheng (5–11, 11–3, 8–11, 8–11). The official player page then records a walkover loss in the 17th–32nd placement bracket and a later cancelled placement match, so only the played Round of 32 match is counted in the dashboard totals: <b>0–1</b>, 1–3 games, 32–36 points.
+      </div>
+    </div>
+
+    <!-- ── JESSICA OPEN 2026 (BU13, Hong Kong) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>THE JESSICA COMPANY Hong Kong Junior Squash Open 2026</h3>
+          <div class="when">4–9 Aug 2026 · Cornwall St &amp; HK Squash Centre · International</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>12 yrs</b></span>
+        <span class="pill">Seed band <b>[17/32]</b></span>
+        <span class="pill">Run <b>Bye → R2 → R3 → Special Plate R1</b></span>
+        <a class="pill src" href="https://www.hksquash.org.hk/public/tournaments/draws/id/378/division_id/1590.html#drawsTab" target="_blank" rel="noopener">Official draw <b>id 378 ↗</b></a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Bye</div>
+          <div class="cn">Advanced directly to Round 2</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Bye</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chong Tsz Yuen <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">Unseeded · 05 Aug, 11:30 · Crt 9 (CSPSC) · 17 min</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–9</span><span class="game w">11–4</span><span class="game w">11–7</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R3<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Hung Wai Chun <span class="seed">[3/4]</span> <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">05 Aug, 16:00 · Crt 14 (CSPSC) · 20 min</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">5–11</span><span class="game">6–11</span><span class="game">7–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Special R1</small></div>
+        <div class="opp">
+          <div class="name">Wong Tsz Wang Clayton <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">王子弘 · Unseeded · 06 Aug, 16:00 · Crt 13 (CSPSC) · 19 min</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">6–11</span><span class="game">9–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Seeded [17/32], Alex received a first-round bye and beat Chong Tsz Yuen in straight games before losing to [3/4] seed Hung Wai Chun in Round 3. In the Special Plate for Round 3 losers, he met familiar opponent Wong Tsz Wang Clayton and lost 6–11, 9–11. All three played matches were at Cornwall Street Squash Centre. Tournament total: <b>1W–2L</b>, 3–5 games and 66–75 points; the bye is excluded.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 8: CHINA SQUASH JUNIOR OPEN 2026 (BU13, China — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>China Squash Junior Open 2026</h3>
+          <div class="when">15–19 Jul 2026 · Jining, Shandong, China · Overseas</div>
+        </div>
+        <span class="badge intl">🇨🇳 China</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>[17/32]</b></span>
+        <span class="pill">Run <b>Bye → R2 → R3</b></span>
+        <span class="pill">Finished <b>Top 32</b></span>
+        <span class="pill">Registered as <b>陈科霖</b></span>
+        <span class="pill">🌏 Overseas event</span>
+        <a class="pill src" href="https://squash.univsport.com/h5/match-schedule/43" target="_blank" rel="noopener">Official draw <b>UnivSport 43 ↗</b></a>
+      </div>
+
+      <!-- R1 BYE -->
+      <div class="match">
+        <div class="rnd">R1<small>Round of 128</small></div>
+        <div class="opp">
+          <div class="name">Bye</div>
+          <div class="cn">Seeded directly to Round 2</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Bye</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <!-- R2 -->
+      <div class="match">
+        <div class="rnd">R2<small>Round of 64</small></div>
+        <div class="opp">
+          <div class="name">Wang Zhi Qi <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">王祉棋 · unseeded · 15 Jul, 14:30, Court-02 (11 min)</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–0</span><span class="game w">11–0</span></div>
+        </div>
+      </div>
+
+      <!-- R3 -->
+      <div class="match">
+        <div class="rnd">R3<small>Round of 32</small></div>
+        <div class="opp">
+          <div class="name">Dai Yichen <span class="seed">[3/4]</span> <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">戴一尘 · 16 Jul, 15:00, Court-01 (18 min)</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">9–11</span><span class="game">7–11</span><span class="game">5–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A useful China benchmark in a 70-player BU13 draw. Alex's [17/32] seed line held: after the R1 bye he beat Wang Zhi Qi 3–0, giving up only two points across three games. R3 was the level jump — Dai Yichen was listed as a [3/4] seed, and Alex stayed closest in the opener before the seed closed it out in three. Result: <b>Top 32</b>, with a clean win followed by a realistic test against one of the draw's top players.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 7: CUP 2026 (BU13) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>Hong Kong Junior Squash Cup 2026</h3>
+          <div class="when">13–21 Jun 2026 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seed band <b>17/32</b></span>
+        <span class="pill">Run <b>Bye → R2 → R3 → Plate</b></span>
+        <a class="pill src" href="https://hksquash.org.hk/public/tournaments/events/id/375.html" target="_blank" rel="noopener">Official draw <b>id 375</b> ↗</a>
+      </div>
+
+      <!-- R1 BYE -->
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Bye</div>
+          <div class="cn">Seeded directly to Round 2</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Bye</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <!-- R2 -->
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chen Marshall Youpeng</div>
+          <div class="cn">陳有朋 · unseeded · 13 Jun, 17:30, Crt 15 (19 min)</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores">
+            <span class="game w">11–2</span>
+            <span class="game w">14–12</span>
+            <span class="game w">11–4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- R3 -->
+      <div class="match">
+        <div class="rnd">R3<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chan Sze Long <span class="seed">[5/8 seed]</span></div>
+          <div class="cn">陳師朗 · 14 Jun, 10:00, Crt 12 (24 min) · finished in tournament Top 8</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 1–3</div>
+          <div class="scores">
+            <span class="game">7–11</span>
+            <span class="game">3–11</span>
+            <span class="game w">11–7</span>
+            <span class="game">4–11</span>
+          </div>
+          <div class="video-links">
+            <a href="https://youtu.be/inFjjv3qapM" target="_blank" rel="noopener">▶ Set 2</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLATE -->
+      <div class="match">
+        <div class="rnd">Plate<small>Special (R3 losers)</small></div>
+        <div class="opp">
+          <div class="name">Park Yongsung John <span class="seed">[9/16 seed]</span></div>
+          <div class="cn">19 Jun, Crt 9 (HKSC) · won the opener 14–12</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 1–2</div>
+          <div class="scores"><span class="game w">14–12</span><span class="game">5–11</span><span class="game">8–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A strong step up to BU13. As a [17/32] seed Alex cruised R2 with a clinical 3–0, including a decisive 14–12 game. In R3 he met Chan Sze Long, the [5/8] seed who finished in the tournament's <b>Top 8</b> — and still grabbed a game off him (11–7). That's a recurring theme: Alex fights back when behind. <b>Recurring opponent alert:</b> Marshall Youpeng turned up here in BU13 too, and Alex was comfortable winning again — this time even more decisively (11–2 in G1). In the Special Plate he met Park Yongsung John — whom he'd <em>beaten</em> in the 2024 Championships plate — and took the opener 14–12 before falling 1–2, a narrow rematch that went the other way this time.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 7: RANKING 2026 (BU13) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>HK Junior Squash Ranking Tournament 2026</h3>
+          <div class="when">11–26 Apr 2026 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seed band <b>17/32</b></span>
+        <span class="pill">Run <b>Bye → R2 → R3 → Plate QF</b></span>
+        <a class="pill src" href="https://hksquash.org.hk/public/tournaments/events/id/371.html" target="_blank" rel="noopener">Official draw <b>id 371</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Bye</div>
+          <div class="cn">Seeded directly to Round 2</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Bye</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Yau Ching Yu</div>
+          <div class="cn">邱正羽 · unseeded · 11 Apr, Crt 7</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–8</span><span class="game w">11–2</span><span class="game w">11–4</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R3<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chan Sze Long <span class="seed">[5/8 seed]</span></div>
+          <div class="cn">陳師朗 · 12 Apr, Crt 3 · made the Top 8</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">0–11</span><span class="game">7–11</span><span class="game">3–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Special R1</small></div>
+        <div class="opp">
+          <div class="name">Sun Luke Tang <span class="seed">[17/32 seed]</span></div>
+          <div class="cn">孫慶恒 · 18 Apr, Crt 16</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game">9–11</span><span class="game w">12–10</span><span class="game w">11–7</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Special QF</small></div>
+        <div class="opp">
+          <div class="name">Wong Pak Yiu <span class="seed">[17/32 seed]</span></div>
+          <div class="cn">黃柏堯 · 19 Apr, Crt 14 · went on to win the Plate</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">6–11</span><span class="game">5–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A clean 3–0 in R2, then a tough R3 draw against Chan Sze Long, the [5/8] seed who reached the Top 8. Note the progression: here (April) Alex lost to Chan 0–3 managing just 0, 7, 3 points — but two months later in the June Cup he faced Chan again and <b>took a full game off him</b>. Same opponent, clear improvement. In the Plate he showed fight, edging Sun Luke Tang in three after dropping the first game.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 6c: NEGERI SEMBILAN INTERNATIONAL JUNIOR OPEN 2026 (BU13, Malaysia — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>Negeri Sembilan International Junior Open 2026</h3>
+          <div class="when">7–11 Apr 2026 · Seremban, Malaysia · Overseas (AJSS)</div>
+        </div>
+        <span class="badge intl">🇲🇾 Malaysia</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>[17/32]</b></span>
+        <span class="pill">Run <b>R1 → R2 → Plate → 25–32 placement</b></span>
+        <span class="pill">Finished <b>26th</b></span>
+        <span class="pill">Opp. codes = 🇲🇾 states (exc. 🇨🇳 CHN)</span>
+        <a class="pill src" href="https://www.rankedin.com/en/tournament/60463/negeri-sembilan-international-junior-squash-open-2026/draws/141199" target="_blank" rel="noopener">Official draw <b>rankedin ↗</b></a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Round of 64</small></div>
+        <div class="opp">
+          <div class="name">Muhammad Adwa Zuhri <span class="seed">[33/57]</span> <span class="cn">🇲🇾 PHG</span></div>
+          <div class="cn">Pahang · 10 min</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–0</span><span class="game w">11–8</span><span class="game w">11–3</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Round of 32</small></div>
+        <div class="opp">
+          <div class="name">Zhiran Dai <span class="seed">[9/16]</span> <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">China · 15 min</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">7–11</span><span class="game">9–11</span><span class="game">8–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Places 17–32, R1</small></div>
+        <div class="opp">
+          <div class="name">Edmund Jun Siang Chan <span class="seed">[17/32]</span> <span class="cn">🇲🇾 SEL</span></div>
+          <div class="cn">Selangor · 13 min</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">6–11</span><span class="game">9–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">25–32<small>Semi-final</small></div>
+        <div class="opp">
+          <div class="name">Mabilesh A/L Sarovanan <span class="seed">[9/16]</span> <span class="cn">🇲🇾 MLK</span></div>
+          <div class="cn">Melaka · opponent retired ⚠️</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won — ret.</div>
+          <div class="scores"><span class="game bye">opponent retired — advanced</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">25–32<small>25–28 line</small></div>
+        <div class="opp">
+          <div class="name">Yuvaneswaran Suresh <span class="seed">[17/32]</span> <span class="cn">🇲🇾 SEL</span></div>
+          <div class="cn">Selangor · 13 min</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game">7–11</span><span class="game w">11–6</span><span class="game w">11–6</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">25–32<small>25th-place final</small></div>
+        <div class="opp">
+          <div class="name">Phan Hernan Ding Wei <span class="seed">[17/32]</span> <span class="cn">🇲🇾 SWK</span></div>
+          <div class="cn">Sarawak · 10 min · also met at Kuala Lumpur 2025</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">8–11</span><span class="game">7–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A third overseas trip, and a deep domestic-Malaysian field at this AJSS event in Seremban. Alex opened with a ruthless 3–0 (including an 11–0 game), then lost a competitive 0–3 to China's Zhiran Dai — every game within four points. The placement draws were a grind: he edged Yuvaneswaran Suresh in three and advanced once via a retirement, finishing 26th. <b>Rematch alert:</b> his final-placement loss was to Phan Hernan Ding Wei — the same player who beat him at Kuala Lumpur 2025 — so that head-to-head sits at 0–2. Most "country" codes here are Malaysian state codes (Selangor, Pahang, Melaka, Sarawak); only CHN was a true overseas opponent. Useful mileage against a style of player he doesn't see at home.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 6b: TANGLIN JUNIOR OPEN 2026 (BU13, Singapore — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>Spark Education Tanglin Junior Open 2026</h3>
+          <div class="when">11–14 Feb 2026 · Tanglin Club, Singapore · Overseas</div>
+        </div>
+        <span class="badge intl">🇸🇬 Singapore</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>[9/16]</b></span>
+        <span class="pill">Format <b>Monrad · 32 draw</b></span>
+        <span class="pill">Finished <b>14th of 32</b></span>
+        <span class="pill">🌏 Overseas event</span>
+        <a class="pill src" href="https://www.tournamentsoftware.com/tournament/8BA49A35-79E8-45EC-8D4C-9B1C58889932/draw/2" target="_blank" rel="noopener">Official draw <b>tournamentsoftware ↗</b></a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Round of 32</small></div>
+        <div class="opp">
+          <div class="name">Tian Zhongsen <span class="seed">[17/20]</span> <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">11 Feb</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–5</span><span class="game w">11–4</span><span class="game w">11–9</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Round of 16</small></div>
+        <div class="opp">
+          <div class="name">Dai Yichen <span class="seed">[1 seed]</span> <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">11 Feb · top seed</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">4–11</span><span class="game">4–11</span><span class="game">6–11</span></div>
+          <div class="video-links">
+            <a href="https://youtu.be/pUTmqcacUEQ" target="_blank" rel="noopener">▶ Set 1</a>
+            <a href="https://youtu.be/34FK_atkcfM" target="_blank" rel="noopener">▶ Set 2</a>
+            <a href="https://youtu.be/C8KRf4oQ9hc" target="_blank" rel="noopener">▶ Set 3</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">9–16th<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Edward Lam <span class="seed">[5/8]</span> <span class="cn">🇲🇾 MAS</span></div>
+          <div class="cn">12 Feb</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">6–11</span><span class="game">9–11</span><span class="game">9–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">13–16th<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Aiden Kang <span class="seed">[9/16]</span> <span class="cn">🇦🇺 AUS</span></div>
+          <div class="cn">13 Feb · also beaten at HKFC 2024</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–1</div>
+          <div class="scores"><span class="game w">11–4</span><span class="game">9–11</span><span class="game w">11–2</span><span class="game w">11–5</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">13–14th<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Muyuan Zou <span class="seed">[5/8]</span> <span class="cn">🇸🇬 SIN</span></div>
+          <div class="cn">13 Feb · for 13th place</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">3–11</span><span class="game">8–11</span><span class="game">9–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Alex's second overseas event — a strong international field in Singapore, two months after his Kuala Lumpur debut. He opened with a confident 3–0 over China's Tian Zhongsen, then ran into the tournament's <b>top seed</b> Dai Yichen and was outclassed. In a Monrad draw (everyone keeps playing for final placement) he finished 14th of 32. The highlight was a 3–1 win over Australia's Aiden Kang — the <b>same player he beat in the HKFC 2024 plate</b>, so a 2–0 career head-to-head against him now. The two 0–3 placement losses (to Malaysia's Edward Lam and Singapore's Muyuan Zou, both higher-seeded) show the level jump at an international event, but he was competitive in patches — 9-point games in several. Valuable exposure against players from China, Malaysia, Australia and Singapore in one week.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 6d: KOREA CUP JUNIOR OPEN 2026 (BU13, South Korea — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2026">
+      <div class="tourney-top">
+        <div>
+          <h3>2026 Korea Cup Junior Open &amp; PSA Challenger 6</h3>
+          <div class="when">8–12 Feb 2026 · Gimcheon Squash Stadium, South Korea · Overseas</div>
+        </div>
+        <span class="badge intl">🇰🇷 South Korea</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>not shown</b></span>
+        <span class="pill">Run <b>R16 → 9th–10th playoff</b></span>
+        <span class="pill">Finished <b>10th</b></span>
+        <span class="pill">🌏 Overseas event</span>
+        <a class="pill src" href="https://squash.ohmyplay.com/tournament/2098" target="_blank" rel="noopener">Official draw <b>Oh My Play ↗</b></a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R16<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Yejun K. <span class="cn">🇰🇷 KOR</span></div>
+          <div class="cn">8 Feb, Crt 1</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">6–11</span><span class="game">7–11</span><span class="game">7–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">9–10th<small>Quarter-final</small></div>
+        <div class="opp">
+          <div class="name">Yejun S. <span class="cn">🇰🇷 KOR</span></div>
+          <div class="cn">9 Feb, Crt 3 · a different Yejun</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game">8–11</span><span class="game w">11–9</span><span class="game w">11–4</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">9–10th<small>Semi-final</small></div>
+        <div class="opp">
+          <div class="name">Jiwon W. <span class="cn">🇰🇷 KOR</span></div>
+          <div class="cn">9 Feb, Crt 2</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–1</span><span class="game w">11–2</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">9–10th<small>Final</small></div>
+        <div class="opp">
+          <div class="name">Hyeonuk C. <span class="cn">🇰🇷 KOR</span></div>
+          <div class="cn">10 Feb, Crt 3 · Alex withdrew — not counted</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Lost W/O</div>
+          <div class="scores"><span class="game bye">walkover — finished 10th</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A quick trip to Gimcheon for a PSA-attached junior event. Alex drew a tough main-draw R16 against the local Yejun K. and went out 0–3. He responded well in the 9th–10th classification bracket, grinding past a second Yejun (Yejun S.) in three, then a dominant semi (11–1, 11–2). He withdrew from the placement final, which the site recorded as a walkover — so it isn't counted in his totals (consistent with how byes and walkovers are treated everywhere on this board), leaving a 2–1 counted record and a 10th-place finish. Note: the Korean site shows shortened names, and the two "Yejun" players are different people.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 6: HKFC INTERNATIONAL 2025 (BU13) — last of 2025 ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>HKFC International Junior Squash Open 2025</h3>
+          <div class="when">19–23 Dec 2025 · HK Squash Centre · International</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → R2 → Classic Plate R2</b></span>
+        <span class="pill">Int'l field 🌏</span>
+        <a class="pill src" href="https://hksquash.org.hk/public/tournaments/events/id/350.html" target="_blank" rel="noopener">Official draw <b>id 350</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Zhou Fanjie <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">19 Dec, Crt 5</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–9</span><span class="game w">11–8</span><span class="game w">11–1</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Leung Ngo San <span class="seed">[1 seed]</span> <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">梁敖燊 · 20 Dec, Crt 11 · tournament top seed</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">4–11</span><span class="game">5–11</span><span class="game">2–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R1</small></div>
+        <div class="opp">
+          <div class="name">Li Shang Wei <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">20 Dec, Crt 17</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game w">11–8</span><span class="game">9–11</span><span class="game w">11–5</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R2</small></div>
+        <div class="opp">
+          <div class="name">Guo Enze <span class="seed">[17/32]</span> <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">21 Dec, Crt 16 · went on to win the Classic Plate</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">8–11</span><span class="game">4–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Alex closed out 2025 against a big international field (HKG, China, Japan, India, Singapore and more). He opened with a confident 3–0 win, then drew the hardest possible R2 — top seed Leung Ngo San — and was outclassed, which is no disgrace against the #1. In the Classic Plate he showed grit to come through a three-game battle with Li Shang Wei before losing to Guo Enze, who took the plate. A fitting end to a year where Alex kept testing himself against the very top of BU13.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 5: CHAMPIONSHIPS 2025 (BU13) — PLATE CHAMPION ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>HK Junior Squash Championships 2025</h3>
+          <div class="when">1–16 Nov 2025 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → Plate winner</b></span>
+        <span class="pill">🏆 Plate champion</span>
+        <a class="pill src" href="https://hksquash.org.hk/public/tournaments/events/id/342.html" target="_blank" rel="noopener">Official draw <b>id 342</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chan Shun Ting</div>
+          <div class="cn">陳信霆 · 01 Nov, Crt 3</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">2–11</span><span class="game">8–11</span><span class="game">5–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R1 / R2</small></div>
+        <div class="opp">
+          <div class="name">Walkovers ×2</div>
+          <div class="cn">01 &amp; 08 Nov · advanced through two rounds</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">W/O</div>
+          <div class="scores"><span class="game bye">walkovers — advanced</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>QF</small></div>
+        <div class="opp">
+          <div class="name">Sun Jacob Jia-Wei</div>
+          <div class="cn">09 Nov, Crt 8</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–6</span><span class="game w">11–5</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>SF</small></div>
+        <div class="opp">
+          <div class="name">Nathan Tze Ho Chan</div>
+          <div class="cn">15 Nov, Crt 14</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–7</span><span class="game w">11–4</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>FINAL</small></div>
+        <div class="opp">
+          <div class="name">Tsui Tsit</div>
+          <div class="cn">16 Nov, Crt 4 · Plate champion 🏆</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game">9–11</span><span class="game w">11–8</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A title to celebrate. After a tough R1 loss to Chan Shun Ting, Alex regrouped and ran the table in the Plate — beating Sun Jacob Jia-Wei and Nathan Tze Ho Chan without dropping a game, then edging Tsui Tsit in a three-game final (11-2, 9-11, 11-8) to lift the <b>Plate trophy</b>. Losing the opening game's intensity and still closing it out shows composure under pressure.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 4: CHALLENGE 2025 (BU13) ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>HK Junior Squash Challenge 2025</h3>
+          <div class="when">27 Sep–5 Oct 2025 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>Bye → R2 → Classic Plate QF</b></span>
+        <a class="pill src" href="https://hksquash.org.hk/public/tournaments/events/id/340.html" target="_blank" rel="noopener">Official draw <b>id 340</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Bye</div>
+          <div class="cn">Advanced to Round 2</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Bye</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Morris Brandon Quinn <span class="seed">[17/32]</span></div>
+          <div class="cn">欣子珏 · 27 Sep, Crt 3</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">3–11</span><span class="game">5–11</span><span class="game">6–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R1</small></div>
+        <div class="opp">
+          <div class="name">Lee Ian</div>
+          <div class="cn">28 Sep, Crt 16 · advanced (walkover)</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">W/O</div>
+          <div class="scores"><span class="game bye">walkover — advanced</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R2</small></div>
+        <div class="opp">
+          <div class="name">Mishra Swanik</div>
+          <div class="cn">28 Sep, Crt 11</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–2</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic QF</small></div>
+        <div class="opp">
+          <div class="name">Wong Tsz Wang Clayton</div>
+          <div class="cn">王子弘 · 01 Oct, Crt 5 · went on to win the Classic Plate</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">8–11</span><span class="game">3–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A quieter week. After a R1 bye, Alex ran into the seeded Morris Brandon Quinn and lost in three. In the Classic Plate he beat Mishra Swanik comfortably but then met Wong Tsz Wang Clayton — a name that recurs in his BU13 results — who went on to win that plate. A useful reminder that the BU13 field is deep top to bottom.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 3b: MACAU JUNIOR OPEN 2025 (BU13, Macau — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>2025 Macau Junior Open</h3>
+          <div class="when">28–31 Aug 2025 · Macau · Overseas</div>
+        </div>
+        <span class="badge intl">🇲🇴 Macau</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>[17/32]</b></span>
+        <span class="pill">Run <b>R1 → R2 (no consolation)</b></span>
+        <span class="pill">Opp. nationalities <b>not shown</b></span>
+        <span class="pill">Official draw <b>link pending</b></span>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Round of 64</small></div>
+        <div class="opp">
+          <div class="name">Hou Ieong Isaac Wong</div>
+          <div class="cn">王皓楊 · 28 Aug</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–2</span><span class="game w">11–0</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Round of 32</small></div>
+        <div class="opp">
+          <div class="name">Seng Hou Cayden Fong <span class="seed">[2 seed]</span></div>
+          <div class="cn">馮晟皓 · 28 Aug · reached the final</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">4–11</span><span class="game">4–11</span><span class="game">8–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A short, sharp overseas trip to Macau. Alex blew through his Round-of-64 opener 3–0, conceding just four points across three games (including an 11–0). In the Round of 32 he drew the <b>no. 2 seed</b> Seng Hou Cayden Fong — who went all the way to the final — and was beaten 0–3, though he made the third game competitive at 8–11. With no consolation draw feeding his half, his tournament was just these two matches. Opponent nationalities weren't published on this draw.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 3: JESSICA OPEN 2025 (BU13, international) ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>The Jessica Company HK Junior Open 2025</h3>
+          <div class="when">5–10 Aug 2025 · Cornwall St &amp; HK Squash Centre · International</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu13">BU13</span>
+        <span class="pill">Age at event <b>11 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → Plate QF</b></span>
+        <span class="pill">First int'l event 🌏</span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=279" target="_blank" rel="noopener">Official draw <b>match_id 279</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Syahrul Anuar Syahmie Raeesz <span class="seed">[17/24]</span> <span class="cn">🇲🇾 MAS</span></div>
+          <div class="cn">06 Aug, Crt 12</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">6–11</span><span class="game">9–11</span><span class="game">5–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R1</small></div>
+        <div class="opp">
+          <div class="name">Wan Damien <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">06 Aug, Crt 5</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–8</span><span class="game w">11–5</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R2</small></div>
+        <div class="opp">
+          <div class="name">Ng Ho Fung Arthur <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">07 Aug, Crt 13</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–2</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R3</small></div>
+        <div class="opp">
+          <div class="name">Wong Jace <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">08 Aug, Crt 11</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–5</span><span class="game w">12–10</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>QF</small></div>
+        <div class="opp">
+          <div class="name">Saitou Haruki <span class="cn">🇯🇵 JPN</span></div>
+          <div class="cn">08 Aug, Crt 11 · reached the Plate final</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">7–11</span><span class="game">4–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Alex's first taste of international competition, against players from Malaysia, Japan, China and beyond. He drew a seeded Malaysian in R1 and went down, but responded with three straight Plate wins — including a tidy 11-5, 12-10 over Wong Jace — before losing to Japan's Saitou Haruki, who went on to the Plate final. Good exposure to a deeper, more varied field.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 2: CUP 2025 (BU11) — BEST RESULT ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>Hong Kong Junior Squash Cup 2025</h3>
+          <div class="when">1–15 Jun 2025 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>10 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → R2 → R3 → R4 → Plate final</b></span>
+        <span class="pill">Best result <b>★ to date</b></span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=270" target="_blank" rel="noopener">Official draw <b>match_id 270</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Ho Yiu Hei</div>
+          <div class="cn">何曜熙 · unseeded · 01 Jun, Crt 16</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–6</span><span class="game w">11–3</span><span class="game w">11–4</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Koon Ting Kong <span class="seed">[3/4 seed]</span></div>
+          <div class="cn">官霆剛 · 01 Jun, Crt 6 · top-4 seed upset</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–1</div>
+          <div class="scores"><span class="game w">11–6</span><span class="game">5–11</span><span class="game w">12–10</span><span class="game w">11–9</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R3<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Tse Tin Yiu <span class="seed">[25/32 seed]</span></div>
+          <div class="cn">謝天耀 · 07 Jun, Crt 13</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–7</span><span class="game w">11–2</span><span class="game w">11–2</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R4<small>Last 16</small></div>
+        <div class="opp">
+          <div class="name">Cheung Sky</div>
+          <div class="cn">張駿天 · unseeded · 07 Jun, Crt 9 · made the Top 8</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">11–13</span><span class="game">9–11</span><span class="game">11–13</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Consolation QF</small></div>
+        <div class="opp">
+          <div class="name">Zhao Ling Ban Ben <span class="seed">[9/16 seed]</span></div>
+          <div class="cn">趙凌濱 · 08 Jun, Crt 16</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game w">11–9</span><span class="game">6–11</span><span class="game w">11–9</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Consolation SF</small></div>
+        <div class="opp">
+          <div class="name">Li Kaicun <span class="seed">[9/16 seed]</span></div>
+          <div class="cn">李鎧存 · 08 Jun, Crt 7</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–3</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Consolation FINAL</small></div>
+        <div class="opp">
+          <div class="name">Cheung Ryan Hayden <span class="seed">[17/24 seed]</span></div>
+          <div class="cn">張諾浠 · 15 Jun, Crt 4 · Plate runner-up 🥈</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">5–11</span><span class="game">5–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Alex's standout tournament. As an <b>unseeded</b> 10-year-old he knocked out the <b>[3/4] seed Koon Ting Kong</b> in a four-game battle — his biggest scalp on record — then reached the <b>last 16</b>. His only main-draw loss was a razor-thin 0–3 to Cheung Sky (11–13, 9–11, 11–13: every game within two points). He bounced straight back to win two Consolation Plate matches and reach the <b>Plate final</b>, finishing runner-up. Beating a top-4 seed and stringing five match-wins across a week shows real tournament stamina.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 0g: TOUCH 'N GO SRAFTKL OPEN 2025 (BU11, Malaysia — OVERSEAS) ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>Touch 'n Go SRAFTKL International Junior Open 2025</h3>
+          <div class="when">15–20 Apr 2025 · SRAFTKL, Kuala Lumpur · Overseas</div>
+        </div>
+        <span class="badge intl">🇲🇾 Malaysia</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>10 yrs</b></span>
+        <span class="pill">Seeding <b>[17/24]</b></span>
+        <span class="pill">Format <b>Monrad · 128 draw</b></span>
+        <span class="pill">Finished <b>26th</b></span>
+        <span class="pill">🌏 First overseas event</span>
+        <a class="pill src" href="https://www.tournamentsoftware.com/tournament/59B96670-BC0E-4816-B8AE-39F7933F1472/draw/10" target="_blank" rel="noopener">Official draw <b>tournamentsoftware ↗</b></a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Round of 128</small></div>
+        <div class="opp">
+          <div class="name">Bye</div>
+          <div class="cn">advanced to Round of 64</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">Bye</div>
+          <div class="scores"><span class="game bye">no match played</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Round of 64</small></div>
+        <div class="opp">
+          <div class="name">Muhammad Fawwaz Nafis Bin Zulkifli <span class="seed">[33/48]</span> <span class="cn">🇲🇾 MAS</span></div>
+          <div class="cn">15 Apr</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–5</span><span class="game w">11–7</span><span class="game w">11–6</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R3<small>Round of 32</small></div>
+        <div class="opp">
+          <div class="name">Navanithen Harinath <span class="seed">[13/16]</span> <span class="cn">🇲🇾 MAS</span></div>
+          <div class="cn">16 Apr · lost a 13–11 third game</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">4–11</span><span class="game">3–11</span><span class="game">11–13</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">17–32nd<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Phan Hernan Ding Wei <span class="seed">[25/32]</span> <span class="cn">🇲🇾 MAS</span></div>
+          <div class="cn">16 Apr</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">8–11</span><span class="game">7–11</span><span class="game">5–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">25–32nd<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Bungku Ethan <span class="seed">[33/48]</span> <span class="cn">🇲🇾 MAS</span></div>
+          <div class="cn">17 Apr</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–1</div>
+          <div class="scores"><span class="game w">11–5</span><span class="game">6–11</span><span class="game w">11–7</span><span class="game w">11–1</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">25–28th<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Navin Nath Krishanth <span class="seed">[25/32]</span> <span class="cn">🇲🇾 MAS</span></div>
+          <div class="cn">18 Apr</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–8</span><span class="game w">11–8</span><span class="game w">11–6</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">25–26th<small>Placement</small></div>
+        <div class="opp">
+          <div class="name">Wu Ji <span class="seed">[33/48]</span> <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">19 Apr · for 25th place · beat him at HKFC 2024 final</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">7–11</span><span class="game">9–11</span><span class="game">6–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Alex's first trip abroad — a huge 128-player international draw in Kuala Lumpur, fielded almost entirely by Malaysian players. He won his opener 3–0, then met the level: the [13/16] seed Navanithen Harinath took him out 0–3, though Alex pushed the third game to 13–11. In the Monrad placement rounds he traded wins and losses to finish 26th, beating Bungku Ethan and Navin Nath Krishanth. The final-placement loss was to China's <b>Wu Ji</b> — and there's history there: Alex had <b>beaten Wu Ji in the HKFC 2024 Plate final</b> four months earlier, so honours are now even at 1–1. A demanding week of unfamiliar opponents and a real benchmark of where he stood internationally at age 10.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 1: RANKING 2025 ── -->
+    <div class="tourney reveal" data-year="2025">
+      <div class="tourney-top">
+        <div>
+          <h3>HK Junior Squash Ranking Tournament 2025</h3>
+          <div class="when">4–6 Apr (Cornwall St) &amp; 12–13 Apr 2025 (HK Squash Centre)</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>10 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → R2 → R3 → Plate R1</b></span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=264" target="_blank" rel="noopener">Official draw <b>match_id 264</b> ↗</a>
+      </div>
+
+      <!-- R1 -->
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chong Tze Wang</div>
+          <div class="cn">莊子弘 · unseeded · 04 Apr, 09:00, Crt 8</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores">
+            <span class="game w">11–1</span>
+            <span class="game w">11–1</span>
+            <span class="game w">11–1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- R2 -->
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chen Marshall Youpeng <span class="seed">[17/24 seed]</span></div>
+          <div class="cn">陳有朋 · 04 Apr, 15:00, Crt 14</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores">
+            <span class="game w">15–13</span>
+            <span class="game w">11–3</span>
+            <span class="game w">12–10</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- R3 -->
+      <div class="match">
+        <div class="rnd">R3<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Cheung Sky</div>
+          <div class="cn">張駿天 · unseeded · 05 Apr, 12:30, Crt 16 · went on to face #1 seed in R4</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 1–3</div>
+          <div class="scores">
+            <span class="game">11–13</span>
+            <span class="game">8–11</span>
+            <span class="game w">14–12</span>
+            <span class="game">4–11</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLATE R1 -->
+      <div class="match">
+        <div class="rnd">Plate<small>Special (R3 losers)</small></div>
+        <div class="opp">
+          <div class="name">Sun Wai Ki <span class="seed">[25/32 seed]</span></div>
+          <div class="cn">孫煒錡 · 12 Apr, 10:00, Crt 10 · went on to WIN the Special Plate</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores">
+            <span class="game">8–11</span>
+            <span class="game">9–11</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> As an <b>unseeded player</b> in his first year at BU11, Alex beat a [17/24] seed in R2 and reached R3 — a strong debut. In R3 he faced Cheung Sky, who then went all the way to the R4 showdown against the #1 seed. Alex's G3 win <b>14–12</b> showed he wasn't going to fold. Also notable: the 15–13 opening win in R2 proves he can close out tight games under pressure. The opponent in R2, Marshall Youpeng, reappears in the BU13 Cup 2026 — and Alex beats him again.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 0f: HKFC INTERNATIONAL 2024 (BU11) — PLATE CHAMPION ── -->
+    <div class="tourney reveal" data-year="2024">
+      <div class="tourney-top">
+        <div>
+          <h3>HKFC EVISU International Junior Open 2024</h3>
+          <div class="when">24–29 Dec 2024 · HK Football Club &amp; HK Squash Centre · International</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>10 yrs</b></span>
+        <span class="pill">Seeding <b>[25/32]</b></span>
+        <span class="pill">Run <b>R1 → Plate winner</b></span>
+        <span class="pill">🏆 Plate champion</span>
+        <span class="pill">Int'l field 🌏</span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=259" target="_blank" rel="noopener">Official draw <b>match_id 259</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Li Siu Ting <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">李紹鋌 · 24 Dec, Crt 16 · led 2–0</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 2–3</div>
+          <div class="scores"><span class="game w">11–7</span><span class="game w">11–8</span><span class="game">8–11</span><span class="game">10–12</span><span class="game">6–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R1</small></div>
+        <div class="opp">
+          <div class="name">Wong Yau Lam <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">黃宥霖 · 25 Dec, Crt 13</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–1</span><span class="game w">11–3</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R2</small></div>
+        <div class="opp">
+          <div class="name">Chan Lok Man <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">陳洛文 · 25 Dec, Crt 15</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–1</span><span class="game w">11–5</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R3</small></div>
+        <div class="opp">
+          <div class="name">Aiden Kang <span class="cn">🇦🇺 AUS</span></div>
+          <div class="cn">26 Dec, Crt 15 · also met at Singapore 2026</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–8</span><span class="game w">11–6</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>QF</small></div>
+        <div class="opp">
+          <div class="name">Yu Cheuk Yan <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">俞灼昕 · 27 Dec, Crt 17</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–1</span><span class="game w">11–3</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>SF</small></div>
+        <div class="opp">
+          <div class="name">Chan Hoi Yeung <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">陳凱揚 · 27 Dec, Crt 17</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–8</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>FINAL</small></div>
+        <div class="opp">
+          <div class="name">Wu Ji <span class="cn">🇨🇳 CHN</span></div>
+          <div class="cn">吴际 · 28 Dec, Crt 10 · Plate champion 🏆</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–9</span><span class="game w">13–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A gut-punch and a triumph in one week. Alex led his main-draw R1 two games to love against Li Siu Ting, then lost the next three — a hard lesson in closing out matches. He answered it emphatically: <b>six straight Plate wins without dropping a game</b>, beating players from Australia and China along the way and edging Wu Ji 11-9, 13-11 in the final. His third plate title of 2024, and his first at an international event.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 0e: CHAMPIONSHIPS 2024 (BU11) — CLASSIC PLATE CHAMPION ── -->
+    <div class="tourney reveal" data-year="2024">
+      <div class="tourney-top">
+        <div>
+          <h3>HK Junior Squash Championships 2024</h3>
+          <div class="when">2–17 Nov 2024 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>10 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → Classic Plate winner</b></span>
+        <span class="pill">🏆 Classic Plate champion</span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=258" target="_blank" rel="noopener">Official draw <b>match_id 258</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Yiu Man Kit</div>
+          <div class="cn">姚文杰 · 02 Nov, Crt 14</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–1</span><span class="game w">11–0</span><span class="game w">11–0</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Lui Parkson Bryan <span class="seed">[5/8]</span></div>
+          <div class="cn">呂柏燊 · 02 Nov, Crt 13 · reached the Top 8</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">1–11</span><span class="game">7–11</span><span class="game">4–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R1</small></div>
+        <div class="opp">
+          <div class="name">Tse Hiu Fung Alfred</div>
+          <div class="cn">謝曉鋒 · 03 Nov, Crt 11</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–2</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R2</small></div>
+        <div class="opp">
+          <div class="name">Liu Cheuk Wang</div>
+          <div class="cn">廖卓泓 · 10 Nov, Crt 15</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–3</span><span class="game w">11–1</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic QF</small></div>
+        <div class="opp">
+          <div class="name">Park Yongsung John</div>
+          <div class="cn">10 Nov, Crt 14</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–6</span><span class="game w">11–9</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic SF</small></div>
+        <div class="opp">
+          <div class="name">Tsang Kei Yui Jon</div>
+          <div class="cn">曾紀睿 · 16 Nov, Crt 14</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–9</span><span class="game w">11–1</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic FINAL</small></div>
+        <div class="opp">
+          <div class="name">Cheng Tsz Long</div>
+          <div class="cn">鄭梓朗 · 17 Nov, Crt 11 · Classic Plate champion 🏆</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–2</span><span class="game w">11–8</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Alex's biggest plate run yet. After a clean R1 and a straight-games loss to the [5/8] seed Lui Parkson Bryan, he tore through the Classic Plate — <b>five straight wins without dropping a game</b>, capped by a 2–0 final over Cheng Tsz Long. Notable scalp along the way: Park Yongsung John, the same player he'd later meet in the Cup 2026 plate. Two plate titles in 2024 (this and the Cup) underline how well he competes once he's in a consolation draw.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 0d: CHALLENGE 2024 (BU11) ── -->
+    <div class="tourney reveal" data-year="2024">
+      <div class="tourney-top">
+        <div>
+          <h3>HK Junior Squash Challenge 2024</h3>
+          <div class="when">18 Sep–1 Oct 2024 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>10 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → R2 → Classic Plate QF</b></span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=253" target="_blank" rel="noopener">Official draw <b>match_id 253</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Wu Zhen Xi</div>
+          <div class="cn">吴圳曦 · 18 Sep, Crt 16</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–3</span><span class="game w">11–1</span><span class="game w">11–5</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Chan Shun Ting <span class="seed">[9/16]</span></div>
+          <div class="cn">陳信霆 · 18 Sep, Crt 15</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">1–11</span><span class="game">5–11</span><span class="game">4–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R1</small></div>
+        <div class="opp">
+          <div class="name">Hung Pak Hin</div>
+          <div class="cn">孔柏軒 · 22 Sep, Crt 13</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game w">11–5</span><span class="game">10–12</span><span class="game w">11–1</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R2</small></div>
+        <div class="opp">
+          <div class="name">Lam Tsz Wang</div>
+          <div class="cn">林子宏 · 22 Sep, Crt 13</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–8</span><span class="game w">12–10</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic QF</small></div>
+        <div class="opp">
+          <div class="name">Pun William <span class="seed">[9/16]</span></div>
+          <div class="cn">潘德銘 · 28 Sep, Crt 5</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–2</div>
+          <div class="scores"><span class="game">5–11</span><span class="game">2–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A solid week at age 10. Alex opened with a clean sweep of Wu Zhen Xi, then ran into the [9/16] seed Chan Shun Ting (a name that returns in 2025). In the Classic Plate he battled past Hung Pak Hin in three and Lam Tsz Wang in two before the [9/16] seed Pun William ended his run in the QF.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 0c: JESSICA OPEN 2024 (BU11, international) ── -->
+    <div class="tourney reveal" data-year="2024">
+      <div class="tourney-top">
+        <div>
+          <h3>The Jessica Company HK Junior Open 2024</h3>
+          <div class="when">29 Jul–3 Aug 2024 · Cornwall St &amp; HK Squash Centre · International</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>10 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → R2 → Classic Plate R1</b></span>
+        <span class="pill">Int'l field 🌏</span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=249" target="_blank" rel="noopener">Official draw <b>match_id 249</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Wu Zhen Xi <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">吴圳曦 · 29 Jul, Crt 3</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 3–0</div>
+          <div class="scores"><span class="game w">11–5</span><span class="game w">11–2</span><span class="game w">11–3</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Liu Jason Chun Shing <span class="seed">[5/8]</span> <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">廖俊誠 · 29 Jul, Crt 13 · reached the Top 8</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">2–11</span><span class="game">2–11</span><span class="game">1–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R1</small></div>
+        <div class="opp">
+          <div class="name">Chiu Yin Lung Tevis <span class="cn">🇭🇰 HKG</span></div>
+          <div class="cn">趙彥隆 · 30 Jul, Crt 12</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 1–2</div>
+          <div class="scores"><span class="game">6–11</span><span class="game w">11–8</span><span class="game">8–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> Alex's first international event, just after turning 10. He opened with a clean 3–0, then drew the [5/8] seed Liu Jason Chun Shing — the same player who'd beaten him at the Ranking 2024 — and again came up short. A tight three-game loss in the Classic Plate ended his week. Good early exposure to overseas players from China, Japan, Malaysia and beyond.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 0b: CUP 2024 (BU11) — PLATE CHAMPION ── -->
+    <div class="tourney reveal" data-year="2024">
+      <div class="tourney-top">
+        <div>
+          <h3>Hong Kong Junior Squash Cup 2024</h3>
+          <div class="when">8–16 Jun 2024 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>9 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → Plate winner</b></span>
+        <span class="pill">🏆 Plate champion</span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=244" target="_blank" rel="noopener">Official draw <b>match_id 244</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Nathan Tze Ho Chan</div>
+          <div class="cn">陳梓淏 · 08 Jun · conceded (walkover)</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">W/O</div>
+          <div class="scores"><span class="game bye">walkover — to Plate</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>R2</small></div>
+        <div class="opp">
+          <div class="name">Ho Ho Yeung</div>
+          <div class="cn">何昊陽 · 09 Jun, Crt 6</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–7</span><span class="game w">11–4</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>QF</small></div>
+        <div class="opp">
+          <div class="name">Chan Ka Hei</div>
+          <div class="cn">陳嘉曦 · 10 Jun, Crt 2</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–5</span><span class="game w">11–0</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>SF</small></div>
+        <div class="opp">
+          <div class="name">Lu James Andrew</div>
+          <div class="cn">盧政堯 · 15 Jun · advanced (walkover)</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">W/O</div>
+          <div class="scores"><span class="game bye">walkover — advanced</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>FINAL</small></div>
+        <div class="opp">
+          <div class="name">Yau Ching Yu</div>
+          <div class="cn">邱正羽 · 16 Jun, Crt 11 · Plate champion 🏆</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–0</div>
+          <div class="scores"><span class="game w">11–8</span><span class="game w">11–4</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> A trophy at age 9. Alex conceded his main-draw R1 (a walkover), but in the Plate he was untouchable — beating Ho Ho Yeung, Chan Ka Hei and then Yau Ching Yu in the final, <b>without dropping a single game</b> across his three played matches (11-0 in one of them). His first piece of silverware on record.
+      </div>
+    </div>
+
+    <!-- ── TOURNAMENT 0: RANKING 2024 (BU11) — earliest on record ── -->
+    <div class="tourney reveal" data-year="2024">
+      <div class="tourney-top">
+        <div>
+          <h3>HK Junior Squash Ranking Tournament 2024</h3>
+          <div class="when">6–21 Apr 2024 · Cornwall St &amp; HK Squash Centre</div>
+        </div>
+        <span class="badge verified">Verified · full scores</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="cat-bu11">BU11</span>
+        <span class="pill">Age at event <b>9 yrs</b></span>
+        <span class="pill">Seeding <b>Unseeded</b></span>
+        <span class="pill">Run <b>R1 → R2 → Classic Plate R2</b></span>
+        <span class="pill">Earliest on record ⏳</span>
+        <a class="pill src" href="https://drawsystem.hksquash.org.hk/public_Organization.php?action=doStart&match_id=240" target="_blank" rel="noopener">Official draw <b>match_id 240</b> ↗</a>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R1<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Feng Jiaxuan</div>
+          <div class="cn">馮嘉軒 · 06 Apr · advanced (walkover)</div>
+        </div>
+        <div class="result bye">
+          <div class="tag">W/O</div>
+          <div class="scores"><span class="game bye">walkover — advanced</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">R2<small>Main draw</small></div>
+        <div class="opp">
+          <div class="name">Liu Jason Chun Shing <span class="seed">[5/8 seed]</span></div>
+          <div class="cn">廖俊誠 · 06 Apr, Crt 6 · reached the Top 8</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 0–3</div>
+          <div class="scores"><span class="game">0–11</span><span class="game">1–11</span><span class="game">1–11</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R1</small></div>
+        <div class="opp">
+          <div class="name">Ho Chun Lok</div>
+          <div class="cn">何晉樂 · 13 Apr, Crt 13</div>
+        </div>
+        <div class="result win">
+          <div class="tag">Won 2–1</div>
+          <div class="scores"><span class="game">9–11</span><span class="game w">11–6</span><span class="game w">11–6</span></div>
+        </div>
+      </div>
+
+      <div class="match">
+        <div class="rnd">Plate<small>Classic R2</small></div>
+        <div class="opp">
+          <div class="name">Wong Tsz Wang Clayton</div>
+          <div class="cn">王子弘 · 13 Apr, Crt 13</div>
+        </div>
+        <div class="result loss">
+          <div class="tag">Lost 1–2</div>
+          <div class="scores"><span class="game">7–11</span><span class="game w">11–6</span><span class="game">9–11</span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <b>Coach's note:</b> The earliest tournament on Alex's record — he was just 9. He ran into a strong [5/8] seed in R2 and was outgunned, which is expected at that age against a Top-8 player. The bright spot was the Classic Plate opener: down a game to Ho Chun Lok, he fought back to win in three. His plate run ended against Wong Tsz Wang Clayton — a name that keeps reappearing right up to 2025. A great baseline to measure how much his game has grown since.
+      </div>
+    </div>
+  </section>
+
+  <!-- SEASON STATS -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">By the numbers</div>
+      <h2>Career totals so far</h2>
+      <p>Includes all matches with published scores across all twenty-four verified tournaments. Byes and walkovers aren't counted; a win by retirement counts as a match win but adds no games or points.</p>
+    </div>
+
+    <div class="stats" style="margin-top:24px">
+      <div class="stat"><div class="n red">54–43</div><div class="l">Match record</div></div>
+      <div class="stat"><div class="n">136–125</div><div class="l">Games (sets)</div></div>
+      <div class="stat"><div class="n">2277</div><div class="l">Points scored</div></div>
+      <div class="stat"><div class="n">2059</div><div class="l">Points conceded</div></div>
+    </div>
+
+    <div class="bars" style="margin-top:28px">
+      <div class="bar-row">
+        <div class="bl"><span>Games won vs lost</span><span class="v">136 / 125</span></div>
+        <div class="track" role="img" aria-label="136 games won, 125 games lost">
+          <div class="fill won" style="width:52%"></div>
+          <div class="fill lost" style="width:48%"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bl"><span>Points scored vs conceded</span><span class="v">2277 / 2059</span></div>
+        <div class="track" role="img" aria-label="2277 points scored, 2059 conceded">
+          <div class="fill won" style="width:53%"></div>
+          <div class="fill lost" style="width:47%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:6px;overflow:hidden">
+      <div style="background:var(--wall-2);padding:14px 16px">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px">BU11 (2024–25 · age 9–10)</div>
+        <div style="font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:1.3rem">30W – 15L</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:2px">76–45 games · 1115–885 pts · 9 events (incl. 🇲🇾 Malaysia)</div>
+      </div>
+      <div style="background:var(--wall-2);padding:14px 16px">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px">BU13 (2025–26 · age 11–12)</div>
+        <div style="font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:1.3rem">24W – 27L</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:2px">60–77 games · 1145–1141 pts · 14 events (incl. 🇲🇾 🇸🇬 🇰🇷 🇲🇴 🇨🇳)</div>
+      </div>
+      <div style="background:var(--wall-2);padding:14px 16px">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px">Boys C Grade (2026 · age 12)</div>
+        <div style="font-family:'Saira Condensed',sans-serif;font-weight:700;font-size:1.3rem">0W – 1L</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:2px">0–3 games · 17–33 pts · 1 event</div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- PENDING -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">Coming to the board</div>
+      <h2>Matches still to add</h2>
+      <p>BU9 events (2022–2023) are excluded by request. The dashboard currently records twenty-four (sixteen Hong Kong events plus eight overseas: Malaysia ×3, Singapore, South Korea, Macau ×2 and China), Alex’s recorded results are final; the Macau 2025 official-draw link is still pending.</p>
+    </div>
+
+    <div class="note" style="margin-top:20px">
+      <b>How to pull the next event.</b> For events on the new hksquash.org.hk system, use the player schedule page:
+      <code style="background:var(--wall);padding:1px 5px;border-radius:3px">hksquash.org.hk/public/tournaments/schedule/id/{SITE_ID}/player_id/34224.html</code>.
+      For events on the legacy draw system (drawsystem.hksquash.org.hk), find the match_id, go to Draws, open the BU11 or BU13 bracket, and search for 陳科霖 / Chen Alexander Kelin. The draw system shows <em>incoming</em> round scores, not current-round scores — read the <em>next</em> column's cell to find the actual match result.
+    </div>
+  </section>
+
+  <div class="note">
+    <b>Honesty check.</b> Every score and ranking on this board is sourced rather than estimated. Twenty-two of the twenty-three tournaments link to their official draw sheets (tap "Official draw ↗" on any card): in BU11, Ranking 2024 (match_id 240), Cup 2024 (244), Jessica Open 2024 (249), Challenge 2024 (253), Championships 2024 (258), HKFC Open 2024 (259), Ranking 2025 (264) and Cup 2025 (270); in BU13, Jessica Open 2025 (279), Challenge 2025 (id 340), Championships 2025 (342), HKFC Open 2025 (350), Ranking 2026 (371), Cup 2026 (375) and Jessica Open 2026 (378). Boys C Grade includes HKSSF Inter-school 2026-2027 (id 389, division 1661). Hong Kong events are sourced from the Squash Association of Hong Kong (SHA) draw system; the overseas events with source links are Kuala Lumpur 2025, Singapore 2026 and Macau 2026 from tournamentsoftware.com, Seremban 2026 from rankedin.com, Korea Cup 2026 from Oh My Play, and China Junior Open 2026 from UnivSport; the Macau 2025 draw (Macau Squash Association) is the one source link still to be added. Ranking positions come from the official bi-monthly Junior Ranking, with Jun 2026 updated to #28 and 68.2 average points from the supplied figures. An earlier draft showed a "#9 / 20.14" ranking from a club roster line; that was unverified and was replaced with the official junior-ranking series. Identity is locked to <b>HKS #34224</b> across all sources.
+  </div>
+
+  <footer>
+    Built from official public draw sheets across HK Squash and overseas event systems · Alex's personal coaching record · Updated September 2026
+  </footer>
+
+</main>
+<script>
+  (function () {
+    var yearSel = document.getElementById('yearSelect');
+    var oppSel  = document.getElementById('oppSelect');
+    var countEl = document.getElementById('filterCount');
+    var resetBtn = document.getElementById('filterReset');
+    if (!yearSel || !oppSel) return;
+
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.tourney[data-year]'));
+
+    // Extract the clean opponent name from a .match row (text before any seed/flag span).
+    function oppName(row) {
+      var nameEl = row.querySelector('.opp .name');
+      if (!nameEl) return '';
+      var first = nameEl.childNodes[0];
+      return first ? first.textContent.trim() : nameEl.textContent.trim();
+    }
+    // A row counts as a real match only if it has a score result that isn't a bye/walkover.
+    function isRealMatch(row) {
+      var res = row.querySelector('.result');
+      return res && !res.classList.contains('bye');
+    }
+
+    // Tag every real match row with its opponent.
+    cards.forEach(function (card) {
+      Array.prototype.slice.call(card.querySelectorAll('.match')).forEach(function (row) {
+        if (!isRealMatch(row)) { row.dataset.opp = ''; return; }
+        var n = oppName(row);
+        row.dataset.opp = n;
+      });
+    });
+
+    function countsForYear(year) {
+      var counts = {};
+      cards.forEach(function (card) {
+        if (year !== 'all' && card.getAttribute('data-year') !== year) return;
+        Array.prototype.slice.call(card.querySelectorAll('.match')).forEach(function (row) {
+          var n = row.dataset.opp || '';
+          if (n) counts[n] = (counts[n] || 0) + 1;
+        });
+      });
+      return counts;
+    }
+
+    function rebuildOpponentOptions() {
+      var previous = oppSel.value;
+      var counts = countsForYear(yearSel.value);
+      oppSel.innerHTML = '<option value="all">All opponents</option>';
+
+      Object.keys(counts).sort(function (a, b) {
+        return counts[b] - counts[a] || a.localeCompare(b);
+      }).forEach(function (name) {
+        var o = document.createElement('option');
+        o.value = name;
+        o.textContent = name + ' (' + counts[name] + (counts[name] > 1 ? ' matches)' : ' match)');
+        oppSel.appendChild(o);
+      });
+
+      oppSel.value = counts[previous] ? previous : 'all';
+    }
+
+    function apply() {
+      var y = yearSel.value, opp = oppSel.value;
+      var visibleCards = 0, visibleMatches = 0;
+
+      cards.forEach(function (card) {
+        var yearOK = (y === 'all' || card.getAttribute('data-year') === y);
+        var rows = Array.prototype.slice.call(card.querySelectorAll('.match'));
+        var cardHasOpp = false;
+
+        rows.forEach(function (row) {
+          var rowOpp = row.dataset.opp || '';
+          var rowMatchesOpp = (opp === 'all') ? true : (rowOpp === opp);
+          // When filtering by a specific opponent, show only that opponent's rows.
+          var showRow = yearOK && (opp === 'all' ? true : rowMatchesOpp);
+          row.style.display = showRow ? '' : 'none';
+          if (opp !== 'all' && rowMatchesOpp) cardHasOpp = true;
+          if (showRow && rowOpp) visibleMatches++;
+        });
+
+        var showCard = yearOK && (opp === 'all' || cardHasOpp);
+        card.style.display = showCard ? '' : 'none';
+        // Dim the coach's note when only a subset of a card's matches is shown.
+        var note = card.querySelector('.takeaway');
+        if (note) note.style.display = (showCard && opp === 'all') ? '' : 'none';
+        if (showCard) visibleCards++;
+      });
+
+      if (countEl) {
+        if (opp === 'all') {
+          countEl.textContent = (y === 'all')
+            ? 'Showing all ' + visibleCards + ' tournaments'
+            : 'Showing ' + visibleCards + ' tournament' + (visibleCards === 1 ? '' : 's') + ' from ' + y;
+        } else {
+          countEl.textContent = 'Showing ' + visibleMatches + ' match' + (visibleMatches === 1 ? '' : 'es') +
+            ' vs ' + opp + (y === 'all' ? '' : ' in ' + y);
+        }
+      }
+    }
+
+    yearSel.addEventListener('change', function () {
+      rebuildOpponentOptions();
+      apply();
+    });
+    oppSel.addEventListener('change', apply);
+    if (resetBtn) resetBtn.addEventListener('click', function () {
+      yearSel.value = 'all';
+      rebuildOpponentOptions();
+      oppSel.value = 'all';
+      apply();
+    });
+    rebuildOpponentOptions();
+    apply();
+  })();
+</script>
+</body>
+</html>
